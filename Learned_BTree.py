@@ -6,7 +6,7 @@ from Trained_NN import TrainedNN, AbstractNN, ParameterPool, set_data_type
 from btree import BTree
 from data.create_data import create_data, Distribution
 import time, gc, json
-import os, sys, getopt
+import getopt, os, sys
 import numpy as np
 
 # Setting
@@ -37,17 +37,22 @@ pathString = {
 # threshold for train (judge whether stop train and replace with BTree)
 thresholdPool = {
     Distribution.RANDOM: [1, 4],
-    Distribution.EXPONENTIAL: [55, 10000]
+    Distribution.EXPONENTIAL: [55, 10000],
+    Distribution.NORMAL: [20, 1000],
+    Distribution.LOGNORMAL: [55, 10000]
 }
 
 # whether use threshold to stop train for models in stages
 useThresholdPool = {
     Distribution.RANDOM: [True, False],
     Distribution.EXPONENTIAL: [True, False],
+    Distribution.NORMAL: [True, True],
+    Distribution.LOGNORMAL: [True, False]
 }
 
 # hybrid training structure, 2 stages
-def hybrid_training(threshold, use_threshold, stage_nums, core_nums, train_step_nums, batch_size_nums, learning_rate_nums,
+def hybrid_training(threshold, use_threshold, stage_nums, core_nums, train_step_nums, batch_size_nums,
+                    learning_rate_nums,
                     keep_ratio_nums, train_data_x, train_data_y, test_data_x, test_data_y):
     stage_length = len(stage_nums)
     col_num = stage_nums[1]
@@ -143,10 +148,10 @@ def train_index(threshold, use_threshold, distribution, path):
     global TOTAL_NUMBER
     TOTAL_NUMBER = data.shape[0]
     for i in range(data.shape[0]):
-        train_set_x.append(data.ix[i, 0])
-        train_set_y.append(data.ix[i, 1])
-        #train_set_x.append(data.ix[i, 0])
-        #train_set_y.append(data.ix[i, 1])
+        train_set_x.append(data.iloc[i, 0])
+        train_set_y.append(data.iloc[i, 1])
+        # train_set_x.append(data.ix[i, 0])
+        # train_set_y.append(data.ix[i, 1])
 
     test_set_x = train_set_x[:]
     test_set_y = train_set_y[:]
@@ -206,8 +211,10 @@ def train_index(threshold, use_threshold, distribution, path):
                                   "bias": trained_index[1][ind].weights}
     result = [{"stage": 1, "parameters": result_stage1}, {"stage": 2, "parameters": result_stage2}]
 
-    with open("model/" + pathString[distribution] + "/full_train/NN/" + str(TOTAL_NUMBER) + ".json", "w") as jsonFile:
-        json.dump(result, jsonFile)
+    samplepath = 'model/' + pathString[distribution] + '/full_train/NN/' + str(TOTAL_NUMBER) + '.json'
+
+    with open(samplepath, 'w') as jsonFile:
+        json.dump(pd.Series(result).to_json(orient='values'), jsonFile)
 
     # wirte performance into files
     performance_NN = {"type": "NN", "build time": learn_time, "search time": search_time, "average error": mean_error,
@@ -215,7 +222,7 @@ def train_index(threshold, use_threshold, distribution, path):
                           "model/" + pathString[distribution] + "/full_train/NN/" + str(TOTAL_NUMBER) + ".json")}
     with open("performance/" + pathString[distribution] + "/full_train/NN/" + str(TOTAL_NUMBER) + ".json",
               "w") as jsonFile:
-        json.dump(performance_NN, jsonFile)
+        json.dump(pd.Series(performance_NN).to_json(orient='values'), jsonFile)
 
     del trained_index
     gc.collect()
@@ -232,18 +239,26 @@ def train_index(threshold, use_threshold, distribution, path):
     err = 0
     print("Calculate error")
     start_time = time.time()
+    print("len(test_set_x): ", len(test_set_x))
+    print("len(test_set_y): ", len(test_set_y))
     for ind in range(len(test_set_x)):
         pre = bt.predict(test_set_x[ind])
+        # print("pre: ", pre)
         err += abs(pre - test_set_y[ind])
+        # print("err: ", err)
         if err != 0:
-            flag = 1
+            flag = 0.01
             pos = pre
             off = 1
+            count = 0
             while pos != test_set_y[ind]:
-                pos += flag * off
+                pos += flag * off # pos = pos.round(decimals=2), np.round(flag * off, decimals=2)
+                pos = np.round(pos, 2)
                 flag = -flag
                 off += 1
+                count += 1
     end_time = time.time()
+    print("end_time: ", end_time)
     search_time = (end_time - start_time) / len(test_set_x)
     print("Search time ", search_time)
     mean_error = err * 1.0 / len(test_set_x)
@@ -261,10 +276,11 @@ def train_index(threshold, use_threshold, distribution, path):
         tmp = {"index": node.index, "isLeaf": node.isLeaf, "children": node.children, "items": item,
                "numberOfkeys": node.numberOfKeys}
         result.append(tmp)
+        # print(result)
+    samplepath = 'model/' + pathString[distribution] + '/full_train/BTree/' + str(TOTAL_NUMBER) + '.json'
 
-    with open("model/" + pathString[distribution] + "/full_train/BTree/" + str(TOTAL_NUMBER) + ".json",
-              "w") as jsonFile:
-        json.dump(result, jsonFile, default=dfn)
+    with open(samplepath, 'w') as jsonFile:
+        json.dump(pd.Series(result).to_json(orient='values'), jsonFile)
 
     # write performance into files
     performance_BTree = {"type": "BTree", "build time": build_time, "search time": search_time,
@@ -273,7 +289,7 @@ def train_index(threshold, use_threshold, distribution, path):
                              "model/" + pathString[distribution] + "/full_train/BTree/" + str(TOTAL_NUMBER) + ".json")}
     with open("performance/" + pathString[distribution] + "/full_train/BTree/" + str(TOTAL_NUMBER) + ".json",
               "w") as jsonFile:
-        json.dump(performance_BTree, jsonFile)
+        json.dump(pd.Series(performance_BTree).to_json(orient='values'), jsonFile)
 
     del bt
     gc.collect()
@@ -372,14 +388,14 @@ def sample_train(threshold, use_threshold, distribution, training_percent, path)
     result = [{"stage": 1, "parameters": result_stage1}, {"stage": 2, "parameters": result_stage2}]
 
     with open("model/" + pathString[distribution] + "/sample_train/NN/" + str(training_percent) + ".json",
-              "w") as jsonFile:
+              "wb") as jsonFile:
         json.dump(result, jsonFile)
 
     performance_NN = {"type": "NN", "build time": learn_time, "search time": search_time, "average error": mean_error,
                       "store size": os.path.getsize(
                           "model/" + pathString[distribution] + "/sample_train/NN/" + str(training_percent) + ".json")}
     with open("performance/" + pathString[distribution] + "/sample_train/NN/" + str(training_percent) + ".json",
-              "w") as jsonFile:
+              "wb") as jsonFile:
         json.dump(performance_NN, jsonFile)
 
     del trained_index
@@ -417,11 +433,14 @@ def main(argv):
     do_create = True
     try:
         opts, args = getopt.getopt(argv, "hd:t:p:n:c:")
+        print(opts)
+        print(args)
     except getopt.GetoptError:
         show_help_message('command')
         sys.exit(2)
     for opt, arg in opts:
         arg = str(arg).lower()
+        print(arg)
         if opt == '-h':
             show_help_message('all')
             return
@@ -444,6 +463,12 @@ def main(argv):
                 is_distribution = True
             elif arg == "exponential":
                 distribution = Distribution.EXPONENTIAL
+                is_distribution = True
+            elif arg == "normal":
+                distribution = Distribution.NORMAL
+                is_distribution = True
+            elif arg == "lognormal":
+                distribution = Distribution.LOGNORMAL
                 is_distribution = True
             else:
                 show_help_message('distribution')

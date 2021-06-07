@@ -1,5 +1,5 @@
 # Main file for NN model
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 from enum import Enum
 from data.create_data import Distribution
@@ -83,7 +83,7 @@ class AbstractNN:
         tmp_res = np.mat(input_key) * np.mat(self.weights[0]) + np.mat(self.bias[0])
         for i in range(1, len(self.core_nums) - 1):
             tmp_res = np.mat(tmp_res) * np.mat(self.weights[i]) + np.mat(self.bias[i])
-            print(tmp_res[0][0])
+            # print(tmp_res[0][0])
         return int((tmp_res[0][0]))
 
 # Netural Network Model
@@ -91,6 +91,7 @@ class TrainedNN:
     def __init__(self, threshold, useThreshold, cores, train_step_num, batch_size, learning_rate, keep_ratio, train_x, train_y,
                  test_x, test_y):
         #set parameters
+        # tf.disable_v2_behavior()
         if cores is None:
             cores = []
         self.threshold_nums = threshold
@@ -108,6 +109,7 @@ class TrainedNN:
         self.batch = 1
         self.batch_x = np.array([self.train_x[0:self.batch_size]]).T
         self.batch_y = np.array([self.train_y[0:self.batch_size]]).T
+        tf.disable_eager_execution()
         self.y_ = tf.placeholder(tf.float32, shape=[None, self.core_nums[-1]])
         self.w_fc = []
         self.b_fc = []
@@ -142,6 +144,7 @@ class TrainedNN:
 
         last_err = 0
         err_count = 0
+        print("cross_entropy start")
         for step in range(0, self.train_step_nums):
             self.sess.run(self.train_step,
                           feed_dict={self.h_fc_drop[0]: self.batch_x, self.y_: self.batch_y,
@@ -151,7 +154,7 @@ class TrainedNN:
                 err = self.sess.run(self.cross_entropy, feed_dict={self.h_fc_drop[0]: np.array([self.train_x]).T,
                                                                    self.y_: np.array([self.train_y]).T,
                                                                    self.keep_prob: 1.0})
-                print("cross_entropy: %f" % err)
+                # print("cross_entropy: %f" % err)
                 if step == 0:
                     last_err = err
                 # use threhold to stop train
@@ -168,6 +171,7 @@ class TrainedNN:
             self.next_batch()
 
     # calculate mean error
+    print("calculate mean error")
     def cal_err(self):
         mean_err = self.sess.run(self.cross_entropy, feed_dict={self.h_fc_drop[0]: np.array([self.train_x]).T,
                                                                 self.y_: np.array([self.train_y]).T,

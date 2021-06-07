@@ -1,0 +1,327 @@
+1.  python Learned_BTree.py -t full -d random -n 100000 -c 1
+*************start Learned NN************
+Build Learned NN time  28.661000967025757
+Calculate Error
+Search time 0.000056
+mean error =  0.5821225999999929
+*************end Learned NN************
+*************start BTree************
+Start Build
+Build BTree time  4.205585956573486
+Calculate error
+Search time  2.3854489326477052e-05
+mean error =  0.0
+*************end BTree************
+
+10K
+Search time 0.000053
+mean error =  0.3987460000000008
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  0.32624316215515137
+Calculate error
+len(test_set_x):  10000
+len(test_set_y):  10000
+end_time:  1622611178.194535
+Search time  1.3497090339660645e-05
+mean error =  0.0
+*************end BTree************
+
+50K
+Build Learned NN time  21.000842094421387
+Calculate Error
+Search time 0.000054
+mean error =  0.4846544000000001
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  1.9411990642547607
+Calculate error
+len(test_set_x):  50000
+len(test_set_y):  50000
+end_time:  1622611328.206592
+Search time  1.5199041366577149e-05
+mean error =  0.0
+
+200K
+
+Build Learned NN time  76.02217197418213
+Calculate Error
+Search time 0.000052
+mean error =  0.5880795999999898
+*************end Learned NN************
+Build BTree time  9.2165207862854
+Calculate error
+len(test_set_x):  200000
+len(test_set_y):  200000
+end_time:  1622611696.015092
+Search time  1.8577064275741578e-05
+mean error =  0.0
+
+300K
+
+Build Learned NN time  113.14038681983948
+Calculate Error
+Search time 0.000054
+mean error =  0.5674540666666434
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  13.677019119262695
+Calculate error
+len(test_set_x):  300000
+len(test_set_y):  300000
+end_time:  1622611916.6569421
+Search time  1.82867169380188e-05
+mean error =  0.0
+*************end BTree************
+
+
+500K
+
+Build Learned NN time  220.1475031375885
+Calculate Error
+Search time 0.000058
+mean error =  0.5418018399999648
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  25.98939275741577
+Calculate error
+len(test_set_x):  500000
+len(test_set_y):  500000
+end_time:  1622612430.0357509
+Search time  2.1102035999298095e-05
+mean error =  0.0
+*************end BTree************
+
+
+
+2. python Learned_BTree.py -t full -d exponential -n 10000 -c 1
+
+
+*************start Learned NN************
+Start Train
+Build Learned NN time  24.546956062316895
+Calculate Error
+Search time 0.000096
+mean error =  20.392006
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  0.3445091247558594
+Calculate error
+len(test_set_x):  10000
+end_time:  1622486271.856478
+Search time  1.3023900985717773e-05
+mean error =  0.0
+*************end BTree************
+
+50K
+
+Build Learned NN time  53.491650104522705
+Calculate Error
+Search time 0.000052
+mean error =  0.8990496000000007
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  2.075287103652954
+Calculate error
+len(test_set_x):  50000
+len(test_set_y):  50000
+end_time:  1622611990.0027552
+Search time  1.6298484802246093e-05
+mean error =  7.999999999997698e-07
+*************end BTree************
+
+100K
+
+Build Learned NN time  98.8081259727478
+Calculate Error
+Search time 0.000078
+mean error =  4.572314900000006
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  4.279552936553955
+Calculate error
+len(test_set_x):  100000
+len(test_set_y):  100000
+end_time:  1622612239.2259772
+Search time  1.630439281463623e-05
+mean error =  2.099999999999387e-06
+*************end BTree************
+
+200K
+
+Build Learned NN time  178.51794004440308
+Calculate Error
+Search time 0.000084
+mean error =  7.67600390000002
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  9.594345092773438
+Calculate error
+len(test_set_x):  200000
+len(test_set_y):  200000
+end_time:  1622612912.477782
+Search time  1.6945124864578246e-05
+mean error =  4.349999999999641e-06
+*************end BTree************
+
+300K
+
+Build Learned NN time  263.04807305336
+Calculate Error
+Search time 0.000089
+mean error =  12.28657429999999
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  14.032356977462769
+Calculate error
+len(test_set_x):  300000
+len(test_set_y):  300000
+end_time:  1622612662.0801432
+Search time  1.7894821166992187e-05
+mean error =  7.699999999998325e-06
+*************end BTree************
+
+
+500K
+
+Build Learned NN time  490.7198929786682
+Calculate Error
+Search time 0.000095
+mean error =  38.197931799999964
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  22.13231086730957
+Calculate error
+len(test_set_x):  500000
+len(test_set_y):  500000
+end_time:  1622613676.8682911
+Search time  1.771823024749756e-05
+mean error =  1.3259999999999316e-05
+*************end BTree************
+
+
+5. python Learned_BTree.py -t full -d lognormal -n 10000 -c 1
+*************start Learned NN************
+Start Train
+2021-06-01 18:44:00.009006: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-06-01 18:44:00.009572: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING:tensorflow:From /Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/tensorflow/python/util/dispatch.py:201: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+2021-06-01 18:44:00.201753: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:196] None of the MLIR optimization passes are enabled (registered 0 passes)
+cross_entropy start
+cross_entropy start
+Using BTree
+Build Learned NN time  2.8124568462371826
+Calculate Error
+Search time 0.000014
+mean error =  0.0019489999999999935
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  0.28274083137512207
+Calculate error
+len(test_set_x):  10000
+len(test_set_y):  10000
+end_time:  1622598243.682539
+Search time  1.6461801528930664e-05
+mean error =  0.0019489999999999935
+*************end BTree************
+
+
+50K
+
+Build Learned NN time  11.82577109336853
+Calculate Error
+Search time 0.000015
+mean error =  0.03013399999999192
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  1.5518598556518555
+Calculate error
+len(test_set_x):  50000
+len(test_set_y):  50000
+end_time:  1622612798.7452312
+Search time  3.2730679512023926e-05
+mean error =  0.009594399999997439
+*************end BTree************
+
+100K
+
+Build Learned NN time  20.527963161468506
+Calculate Error
+Search time 0.000014
+mean error =  0.7479447999993902
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  2.6051788330078125
+Calculate error
+len(test_set_x):  100000
+len(test_set_y):  100000
+end_time:  1622598345.547555
+Search time  4.7373549938201906e-05
+mean error =  0.019236699999991856
+*************end BTree************
+
+200K
+
+Build Learned NN time  41.961012840270996
+Calculate Error
+Search time 0.000016
+mean error =  0.30312384999999975
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  5.689350128173828
+Calculate error
+len(test_set_x):  200000
+len(test_set_y):  200000
+end_time:  1622613150.6785889
+Search time  9.231212854385376e-05
+mean error =  0.03847330000004398
+*************end BTree************
+
+500K
+
+
