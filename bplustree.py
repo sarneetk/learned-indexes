@@ -198,11 +198,8 @@ class BPlusTree:
             self.insert(keys[ind], values[ind])
     
     def predict(self, key):
-        search_result = self.search(Item(key, 0))
-        a_node = self.nodes[search_result['fileIndex']]
-        if a_node.items[search_result['nodeIndex']] is None:
-            return -1
-        return a_node.items[search_result['nodeIndex']].v
+        search_result = self.get(key)
+        return search_result
 
     def insert(self, key, value):
         self.root.insert(key, value)
@@ -338,6 +335,12 @@ def b_plus_tree_main():
     for x in nums:
         t.insert(x, x)
     print(t.items())
+    for ni in t.items():
+            print(ni)
+            if ni is None:
+                continue
+            item = {"key": ni[0], "value": ni[1][0]}
+            print(item)
 
 
 if __name__ == '__main__':

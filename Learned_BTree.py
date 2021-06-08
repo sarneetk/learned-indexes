@@ -8,6 +8,7 @@ from bplustree import BPlusTree
 from data.create_data import create_data, Distribution
 import time, gc, json
 import getopt, os, sys
+from numpyencoder import NumpyEncoder
 import numpy as np
 
 # Setting
@@ -170,7 +171,7 @@ def train_index(threshold, use_threshold, distribution, path):
                                     keep_ratio_set, train_set_x, train_set_y, [], [])
     end_time = time.time()
     learn_time = end_time - start_time
-    print("Build Learned NN time ", learn_time)
+    print("Build Learned NN time ", f"{learn_time:.6f}")
     print("Calculate Error")
     err = 0
     start_time = time.time()
@@ -187,7 +188,7 @@ def train_index(threshold, use_threshold, distribution, path):
     search_time = (end_time - start_time) / len(test_set_x)
     print("Search time %f " % search_time)
     mean_error = err * 1.0 / len(test_set_x)
-    print("mean error = ", mean_error)
+    print("mean error = ", f"{mean_error:.6f}")
     print("*************end Learned NN************\n\n")
     # write parameter into files
     result_stage1 = {0: {"weights": trained_index[0][0].weights, "bias": trained_index[0][0].bias}}
@@ -215,15 +216,15 @@ def train_index(threshold, use_threshold, distribution, path):
     samplepath = 'model/' + pathString[distribution] + '/full_train/NN/' + str(TOTAL_NUMBER) + '.json'
 
     with open(samplepath, 'w') as jsonFile:
-        json.dump(pd.Series(result).to_json(orient='values'), jsonFile)
+        json.dump(result, jsonFile, cls=NumpyEncoder)
 
     # wirte performance into files
-    performance_NN = {"type": "NN", "build time": learn_time, "search time": search_time, "average error": mean_error,
+    performance_NN = {"type": "NN", "build time": f"{learn_time:.6f}", "search time": f"{search_time:.6f}", "average error": f"{mean_error:.6f}",
                       "store size": os.path.getsize(
                           "model/" + pathString[distribution] + "/full_train/NN/" + str(TOTAL_NUMBER) + ".json")}
     with open("performance/" + pathString[distribution] + "/full_train/NN/" + str(TOTAL_NUMBER) + ".json",
               "w") as jsonFile:
-        json.dump(pd.Series(performance_NN).to_json(orient='values'), jsonFile)
+        json.dump(performance_NN, jsonFile, cls=NumpyEncoder)
 
     del trained_index
     gc.collect()
@@ -236,7 +237,7 @@ def train_index(threshold, use_threshold, distribution, path):
     bt.build(test_set_x, test_set_y)
     end_time = time.time()
     build_time = end_time - start_time
-    print("Build BTree time ", build_time)
+    print("Build BTree time ", f"{build_time:.6f}")
     err = 0
     print("Calculate error")
     start_time = time.time()
@@ -261,9 +262,9 @@ def train_index(threshold, use_threshold, distribution, path):
     end_time = time.time()
     print("end_time: ", end_time)
     search_time = (end_time - start_time) / len(test_set_x)
-    print("Search time ", search_time)
+    print("Search time ", f"{search_time:.6f}")
     mean_error = err * 1.0 / len(test_set_x)
-    print("mean error = ", mean_error)
+    print("mean error = ", f"{mean_error:.6f}")
     print("*************end BTree************")
 
     # write BTree into files
@@ -281,16 +282,16 @@ def train_index(threshold, use_threshold, distribution, path):
     samplepath = 'model/' + pathString[distribution] + '/full_train/BTree/' + str(TOTAL_NUMBER) + '.json'
 
     with open(samplepath, 'w') as jsonFile:
-        json.dump(pd.Series(result).to_json(orient='values'), jsonFile)
+        json.dump(result, jsonFile, cls=NumpyEncoder)
 
     # write performance into files
-    performance_BTree = {"type": "BTree", "build time": build_time, "search time": search_time,
-                         "average error": mean_error,
+    performance_BTree = {"type": "BTree", "build time": f"{build_time:.6f}", "search time": f"{search_time:.6f}",
+                         "average error": f"{mean_error:.6f}",
                          "store size": os.path.getsize(
                              "model/" + pathString[distribution] + "/full_train/BTree/" + str(TOTAL_NUMBER) + ".json")}
     with open("performance/" + pathString[distribution] + "/full_train/BTree/" + str(TOTAL_NUMBER) + ".json",
               "w") as jsonFile:
-        json.dump(pd.Series(performance_BTree).to_json(orient='values'), jsonFile)
+        json.dump(performance_BTree, jsonFile, cls=NumpyEncoder)
 
     del bt
     gc.collect()
@@ -304,34 +305,69 @@ def train_index(threshold, use_threshold, distribution, path):
     bpt.build(test_set_x, test_set_y)
     end_time = time.time()
     build_time = end_time - start_time
-    print("Build BPlusTree time ", build_time)
+    print("Build BPlusTree time ", f"{build_time:.6f}")
     err = 0
     print("Calculate error")
     start_time = time.time()
+    count = 0
     for ind in range(len(test_set_x)):
-        pre = bpt.get(test_set_x[ind])
-        # print("pre: ", pre)
-        # print(test_set_y[ind])
-        err += abs(pre - test_set_y[ind])
-        # print("err: ", err)
+        pre = bpt.predict(test_set_x[ind])
+        # if ind < 5:
+        #     print("pre: ", pre)
+        #     print(test_set_y[ind])
+        err += abs(pre[0] - test_set_y[ind])
         if err != 0:
             flag = 0.01
             pos = pre
             off = 1
             count = 0
-            while pos != test_set_y[ind]:
-                pos += flag * off # pos = pos.round(decimals=2), np.round(flag * off, decimals=2)
-                pos = np.round(pos, 2)
-                flag = -flag
-                off += 1
-                count += 1
+            try:
+                while test_set_y[ind] not in pos:
+                    pos += flag * off
+                    pos = np.round(pos, 2)
+                    flag = -flag
+                    off += 1
+                    count += 1
+            except:
+                print('error in mean error b plus tree')
+                print(pos)
+                print(test_set_y[ind])
     end_time = time.time()
     print("end_time: ", end_time)
     search_time = (end_time - start_time) / len(test_set_x)
-    print("Search time ", search_time)
+    print("Search time ", f"{search_time:.6f}")
     mean_error = err * 1.0 / len(test_set_x)
-    print("mean error = ", mean_error)
+    print("mean error = ", f"{mean_error:.6f}")
     print("*************end BPlusTree************")
+
+    # write BTree into files
+    result = []
+    for k, values in bpt.items():
+        item = {}
+        for val in values:
+            if val is None:
+                continue
+            item = {"key": k, "value": val}
+        tmp = {"index": node.index, "isLeaf": node.isLeaf, "children": node.children, "items": item,
+               "numberOfkeys": node.numberOfKeys}
+        result.append(tmp)
+    samplepath = 'model/' + pathString[distribution] + '/full_train/BPlusTree/' + str(TOTAL_NUMBER) + '.json'
+
+    with open(samplepath, 'w') as jsonFile:
+        # json.dump(pd.Series(result).to_json(orient='values'), jsonFile)
+        json.dump(result, jsonFile, cls=NumpyEncoder)
+
+    # write performance into files
+    performance_BPlusTree = {"type": "BPlusTree", "build time": f"{build_time:.6f}", "search time": f"{search_time:.6f}",
+                         "average error": f"{mean_error:.6f}",
+                         "store size": os.path.getsize(
+                             "model/" + pathString[distribution] + "/full_train/BPlusTree/" + str(TOTAL_NUMBER) + ".json")}
+    with open("performance/" + pathString[distribution] + "/full_train/BPlusTree/" + str(TOTAL_NUMBER) + ".json",
+              "w") as jsonFile:
+        json.dump(performance_BPlusTree, jsonFile, cls=NumpyEncoder)
+
+    del bpt
+    gc.collect()
 
 
 # Main function for sampel training
