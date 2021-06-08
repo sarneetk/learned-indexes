@@ -4,6 +4,7 @@ from __future__ import print_function
 import pandas as pd
 from Trained_NN import TrainedNN, AbstractNN, ParameterPool, set_data_type
 from btree import BTree
+from bplustree import BPlusTree
 from data.create_data import create_data, Distribution
 import time, gc, json
 import getopt, os, sys
@@ -293,6 +294,44 @@ def train_index(threshold, use_threshold, distribution, path):
 
     del bt
     gc.collect()
+
+
+    # build BPlusTree index
+    print("*************start BPlusTree************")
+    bpt = BPlusTree(2)
+    print("Start Build")
+    start_time = time.time()
+    bpt.build(test_set_x, test_set_y)
+    end_time = time.time()
+    build_time = end_time - start_time
+    print("Build BPlusTree time ", build_time)
+    err = 0
+    print("Calculate error")
+    start_time = time.time()
+    for ind in range(len(test_set_x)):
+        pre = bpt.get(test_set_x[ind])
+        # print("pre: ", pre)
+        # print(test_set_y[ind])
+        err += abs(pre - test_set_y[ind])
+        # print("err: ", err)
+        if err != 0:
+            flag = 0.01
+            pos = pre
+            off = 1
+            count = 0
+            while pos != test_set_y[ind]:
+                pos += flag * off # pos = pos.round(decimals=2), np.round(flag * off, decimals=2)
+                pos = np.round(pos, 2)
+                flag = -flag
+                off += 1
+                count += 1
+    end_time = time.time()
+    print("end_time: ", end_time)
+    search_time = (end_time - start_time) / len(test_set_x)
+    print("Search time ", search_time)
+    mean_error = err * 1.0 / len(test_set_x)
+    print("mean error = ", mean_error)
+    print("*************end BPlusTree************")
 
 
 # Main function for sampel training

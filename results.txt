@@ -48,6 +48,34 @@ end_time:  1622611328.206592
 Search time  1.5199041366577149e-05
 mean error =  0.0
 
+100K
+Build Learned NN time  33.15876507759094
+Calculate Error
+Search time 0.000051 
+mean error =  0.5913151999999947
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  4.051242113113403
+Calculate error
+len(test_set_x):  100000
+len(test_set_y):  100000
+end_time:  1623120341.675288
+Search time  1.5497288703918456e-05
+mean error =  0.0
+*************end BTree************
+*************start BPlusTree************
+Start Build
+Build BPlusTree time  3.0310206413269043
+Calculate error
+end_time:  1623120346.8535318
+Search time  1.4780158996582031e-05
+mean error =  [0.]
+*************end BPlusTree************
+
+
 200K
 
 Build Learned NN time  76.02217197418213
@@ -229,6 +257,26 @@ Search time  1.771823024749756e-05
 mean error =  1.3259999999999316e-05
 *************end BTree************
 
+1000K
+
+Build Learned NN time  1270.934895992279
+Calculate Error
+Search time 0.000030 
+mean error =  0.044276270000003816
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  57.16642689704895
+Calculate error
+len(test_set_x):  1000000
+len(test_set_y):  1000000
+end_time:  1623119047.7167842
+Search time  2.0373126268386842e-05
+mean error =  2.5020000000000187e-05
+*************end BTree************
+
 
 5. python Learned_BTree.py -t full -d lognormal -n 10000 -c 1
 *************start Learned NN************
@@ -324,4 +372,43 @@ mean error =  0.03847330000004398
 
 500K
 
+
+Build Learned NN time  118.586678981781
+Calculate Error
+Search time 0.000013 
+mean error =  12.319611239956531
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  10.555787801742554
+Calculate error
+len(test_set_x):  500000
+len(test_set_y):  500000
+end_time:  1623098776.3544981
+Search time  0.0001924120602607727
+mean error =  0.09586560000002191
+*************end BTree************
+
+
+1000K
+
+Build Learned NN time  322.7109212875366
+Calculate Error
+Search time 0.000010 
+mean error =  7.234292119966051
+*************end Learned NN************
+
+
+*************start BTree************
+Start Build
+Build BTree time  20.02080488204956
+Calculate error
+len(test_set_x):  1000000
+len(test_set_y):  1000000
+end_time:  1623100498.999255
+Search time  0.0003829708309173584
+mean error =  0.19141662999997747
+*************end BTree************
 
